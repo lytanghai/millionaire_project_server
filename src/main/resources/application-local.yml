@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: millionaire_project
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    #Work
+    url: jdbc:postgresql://localhost:5432/configure
+    username: postgres
+    password: 309927605
+
+  jpa:
+    open-in-view: false
+
+    #Personal
+#    url: jdbc:postgresql://localhost:5432/merchant
+#    username: postgres
+#    password: admin
+
+backend_server:
+  web_url: http://localhost:5173
+
+jwt:
+  secret_key: YourSuperSecretKeyThatIsAtLeast32CharsLong!
+  auth:
+    users:
+      admin_usr: tanghai
+      admin_pwd: 093606872
+
+server:
+  rate_limit: 100
+  servlet:
+    context-path: /millionaire_project
+  port: 8080
+
+app:
+  version: 1.0.10

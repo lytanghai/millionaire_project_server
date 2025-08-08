@@ -1,0 +1,37 @@
+spring:
+  profiles:
+    active: local
+  application:
+    name: millionaire_project
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    # Supabase
+    url: ${DB_HOST}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    open-in-view: ${JPA_VIEW_MODE}
+
+backend_server:
+  web_url: ${SERVER_URL}
+
+jwt:
+  secret_key: ${JWT_SECRET_KEY}
+  auth:
+    users:
+      admin_usr: ${ADMIN_USERNAME}
+      admin_pwd: ${ADMIN_PASSWORD}
+
+server:
+  rate_limit: ${RATE_LIMIT}
+  servlet:
+    context-path: /millionaire_project
+  port: 8080
+
+app:
+  version: 1.0.10

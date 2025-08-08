@@ -1,0 +1,16 @@
+CREATE SEQUENCE credential_seq START 1 INCREMENT 1 NO MINVALUE NO MAXVALUE CACHE 1;
+
+CREATE TABLE credential (
+    id integer NOT NULL DEFAULT nextval('credential_seq'),
+    email varchar(30),
+    provider_name varchar(30),
+    api_key varchar(255),
+    capped integer,
+    remaining integer,
+    refresh_type varchar(10),
+    "current_date" timestamp without time zone,
+    next_refresh_date timestamp without time zone,
+    active boolean NOT NULL DEFAULT true,
+    created_at timestamp without time zone,
+    CONSTRAINT credential_pkey PRIMARY KEY (id)
+);
