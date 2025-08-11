@@ -2,6 +2,8 @@ package com.millionaire_project.millionaire_project.component;
 
 import com.millionaire_project.millionaire_project.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -13,12 +15,18 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.TimeZone;
 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Value("${jwt.secret_key}")
     private String secretKey;
+
+    @Bean
+    public Jackson2ObjectMapperBuilderCustomizer jsonCustomizer() {
+        return builder -> builder.timeZone(TimeZone.getTimeZone("Asia/Phnom_Penh"));
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,

@@ -2,8 +2,6 @@ package com.millionaire_project.millionaire_project.constant;
 
 import java.math.BigDecimal;
 import java.time.ZoneId;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Static {
 
@@ -27,7 +25,8 @@ public class Static {
 
     public static final String CURRENCIES = "currencies";
     public static final String AUTH_TOKEN = "auth_token";
+    public static final String KIND = "kind";
+    public static final String CURRENCY = "currency";
+    public static final String FILTER = "filter";
 
-    public static final Map<String,String> URL_MAPPING = (Map<String, String>) new HashMap<>()
-            .put("CRYPTO_PANIC", CRYPTO_PANIC_BASE_URL);
 }

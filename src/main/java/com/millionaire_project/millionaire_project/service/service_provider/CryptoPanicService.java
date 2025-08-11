@@ -15,7 +15,6 @@ import com.millionaire_project.millionaire_project.repository.CredentialReposito
 import com.millionaire_project.millionaire_project.service.CredentialService;
 import com.millionaire_project.millionaire_project.util.ResponseBuilder;
 import com.millionaire_project.millionaire_project.util.RestTemplateHelper;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @ServiceProvider(partnerCode = "0001", partnerName = "crypto_panic")
@@ -36,6 +32,9 @@ public class CryptoPanicService {
     @Autowired private PartnerServiceRegistry registry;
     @Autowired private CredentialRepository credentialRepository;
     @Autowired private CredentialService credentialService;
+
+    public static final List<String> AVAILABLE_FILTER = Arrays.asList("rising", "hot", "bullish", "bearish", "important", "saved" , "lol");
+    public static final List<String> AVAILABLE_KIND = Arrays.asList("news", "media", "all");
 
     public ResponseBuilder<ApiResponder> triggerApi(ApiRequester dto) throws JsonProcessingException {
         if (dto.getTopicName() == null || dto.getTopicName().isEmpty())
@@ -52,14 +51,22 @@ public class CryptoPanicService {
                 new ServiceException(ApplicationCode.W001.getCode(), ApplicationCode.W001.getMessage()));
 
         Map<String, Object> payloadReq = dto.getPayload();
-        String currency = payloadReq.getOrDefault("currency", "").toString();
+        String currency = payloadReq.getOrDefault(Static.CURRENCY, "").toString();
+        String kind = payloadReq.getOrDefault(Static.KIND, "").toString();
+        String filter = payloadReq.getOrDefault(Static.FILTER, "").toString();
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(Static.CRYPTO_PANIC_BASE_URL)
+                .queryParam(Static.AUTH_TOKEN, entity.getApiKey());
 
-        URI fullUri = UriComponentsBuilder.fromHttpUrl(Static.CRYPTO_PANIC_BASE_URL)
-                .queryParam(Static.AUTH_TOKEN, entity.getApiKey())
-                .queryParam(Static.CURRENCIES, currency)
-                .build()
-                .encode()
-                .toUri();
+        if (!kind.isEmpty() && AVAILABLE_KIND.contains(kind))
+            builder.queryParam(Static.KIND, kind);
+
+        if(!currency.isEmpty())
+            builder.queryParam(Static.CURRENCIES, currency);
+
+        if(!filter.isEmpty() && AVAILABLE_FILTER.contains(filter))
+                builder.queryParam(Static.FILTER, filter);
+
+        URI fullUri = builder.build().encode().toUri();
 
         log.info("Calling external API with URL: {}", fullUri);
 
