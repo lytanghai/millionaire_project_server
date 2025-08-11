@@ -1,5 +1,6 @@
 package com.millionaire_project.millionaire_project.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.millionaire_project.millionaire_project.dto.req.ApiRequester;
 import com.millionaire_project.millionaire_project.dto.res.ApiResponder;
 import com.millionaire_project.millionaire_project.service.service_provider.CryptoPanicService;
@@ -17,7 +18,7 @@ public class ProviderController {
     @Autowired private CryptoPanicService service;
 
     @PostMapping("/trigger")
-    public ResponseBuilder<ApiResponder> check(@RequestBody ApiRequester dto) {
+    public ResponseBuilder<ApiResponder> check(@RequestBody ApiRequester dto) throws JsonProcessingException {
         return service.triggerApi(dto);
     }
 }
