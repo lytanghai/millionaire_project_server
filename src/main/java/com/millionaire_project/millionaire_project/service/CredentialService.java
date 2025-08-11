@@ -2,6 +2,7 @@ package com.millionaire_project.millionaire_project.service;
 
 import com.millionaire_project.millionaire_project.constant.ApplicationCode;
 import com.millionaire_project.millionaire_project.constant.Static;
+import com.millionaire_project.millionaire_project.dto.req.ConsumeReq;
 import com.millionaire_project.millionaire_project.dto.req.CredentialCommonReq;
 import com.millionaire_project.millionaire_project.dto.req.FilterPropertyReq;
 import com.millionaire_project.millionaire_project.dto.req.RegisterCredentialReq;
@@ -11,6 +12,7 @@ import com.millionaire_project.millionaire_project.exception.ServiceException;
 import com.millionaire_project.millionaire_project.repository.CredentialRepository;
 import com.millionaire_project.millionaire_project.util.DateUtil;
 import com.millionaire_project.millionaire_project.util.RequestValidator;
+import com.millionaire_project.millionaire_project.util.ResponseBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,11 +20,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Service
 public class CredentialService {
 
-    @Autowired
-    private CredentialRepository credentialRepository;
+    @Autowired private CredentialRepository credentialRepository;
 
     public void registerCredential(RegisterCredentialReq req) {
         CredentialEntity credentialEntity = new CredentialEntity();
@@ -52,16 +58,18 @@ public class CredentialService {
 
     public void modifyCredential(Integer id, CredentialCommonReq.ModifyCredentialReq req) {
         CredentialEntity credential = findCredentialRecord(id);
-        if(credential != null) {
+        if (credential != null) {
             if (req.getEmail() != null && !req.getEmail().trim().isEmpty()) {
                 credential.setEmail(req.getEmail());
             }
             if (req.getProviderName() != null && !req.getProviderName().trim().isEmpty()) {
                 credential.setProviderName(req.getProviderName());
             }
+
             if (req.getApiKey() != null && !req.getApiKey().trim().isEmpty()) {
                 credential.setApiKey(req.getApiKey());
             }
+
             if (req.getCapped() != null) {
                 credential.setCapped(req.getCapped());
             }
@@ -81,7 +89,7 @@ public class CredentialService {
             credentialRepository.save(credential);
             return;
         }
-        throw new ServiceException(ApplicationCode.E500.getCode(),ApplicationCode.E500.getMessage());
+        throw new ServiceException(ApplicationCode.E005.getCode(), ApplicationCode.E005.getMessage());
     }
 
     private CredentialEntity findCredentialRecord(int id) {
@@ -107,4 +115,47 @@ public class CredentialService {
         return page.map(CredentialResp::fromEntity);
     }
 
+    public void consume(String providerName) {
+            ConsumeReq request = new ConsumeReq();
+            request.setProviderName(providerName);
+            this.consume(request);
+    }
+
+    public ResponseBuilder<CredentialEntity> consume(ConsumeReq req) {
+        if(req.getProviderName().isEmpty())
+            throw new ServiceException(ApplicationCode.E007.getCode(), ApplicationCode.E007.getMessage());
+
+        List<CredentialEntity> credentials = credentialRepository.findByProviderName(req.getProviderName());
+
+        if(credentials.isEmpty()) {
+            throw new ServiceException(ApplicationCode.W001.getCode(), ApplicationCode.W001.getMessage());
+        } else {
+            if(DateUtil.isTodayFirstDayOfMonth()) {
+                List<CredentialEntity> toUpdate = credentials.stream()
+                        .filter(c -> DateUtil.refreshBalance(c.getNextRefreshDate()))
+                        .peek(c -> {
+                            c.setRemaining(c.getCapped());
+                            c.setNextRefreshDate(Static.DAY.equals(c.getRefreshType())
+                                    ? DateUtil.getNextDateAtMidnight()
+                                    : DateUtil.getFirstDateOfNextMonthUtilDate());
+                        })
+                        .collect(Collectors.toList());
+                credentialRepository.saveAll(toUpdate);
+            }
+
+            Optional<CredentialEntity> getRemaining = credentials.stream()
+                    .filter(c -> c.getProviderName().equalsIgnoreCase(req.getProviderName()))
+                    .max(Comparator.comparingInt(CredentialEntity::getRemaining));
+
+            CredentialEntity entity = getRemaining.get();
+
+            entity.setRemaining(entity.getRemaining() -1);
+            if(entity.getRemaining() - 1 == 0)
+                entity.setActive(false);
+
+            credentialRepository.save(entity);
+
+            return ResponseBuilder.success(entity);
+        }
+    }
 }

@@ -3,6 +3,7 @@ package com.millionaire_project.millionaire_project.util;
 import com.millionaire_project.millionaire_project.constant.Static;
 import org.apache.commons.lang3.time.DateUtils;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -19,11 +20,21 @@ import java.util.Date;
 public final class DateUtil extends DateUtils {
 
     public static final String DATE_WITH_TIME_1 = "dd-MM-yyyy HH:mm:ss";
-    public static final String DATE_FORMAT_2 = "yyyy-MM-dd'T'HH:mm:ss";
-    public static final String DATE_FORMAT_3 = "yyyy-MM-dd";
 
     private static final DateTimeFormatter PG_TIMESTAMP_FORMATTER =
             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    public static boolean isTodayFirstDayOfMonth() {
+        LocalDate today = LocalDate.now();
+        return today.getDayOfMonth() == 1;
+    }
+
+    public static boolean refreshBalance(Date refreshDate) {
+        Date now = new Date();
+
+        // Check if now is after or equal to refreshDate
+        return !now.before(refreshDate);
+    }
 
     public static Date convertToPhnomPenhDate(Date inputDate) {
         if (inputDate == null) return null;

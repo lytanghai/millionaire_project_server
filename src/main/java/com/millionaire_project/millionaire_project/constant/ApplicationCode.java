@@ -6,7 +6,14 @@ public enum ApplicationCode {
     E001("E001","Email must not be null or empty!"),
     E002("E002","API KEY must not be null or empty"),
     E003("E003","Capped must not be null or less than 0"),
-    E500("E005", "Record does not exist!");
+    E005("E005", "Record does not exist!"),
+    E006("E006", "Topic Name does not exist!"),
+    E007("E007", "Provider Name does not exist!"),
+
+
+
+    W001("W001","Records not found")
+    ;
 
     private String code;
     private String message;

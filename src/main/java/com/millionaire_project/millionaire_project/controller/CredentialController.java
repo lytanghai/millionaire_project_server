@@ -1,9 +1,11 @@
 package com.millionaire_project.millionaire_project.controller;
 
+import com.millionaire_project.millionaire_project.dto.req.ConsumeReq;
 import com.millionaire_project.millionaire_project.dto.req.CredentialCommonReq;
 import com.millionaire_project.millionaire_project.dto.req.FilterPropertyReq;
 import com.millionaire_project.millionaire_project.dto.req.RegisterCredentialReq;
 import com.millionaire_project.millionaire_project.dto.res.CredentialResp;
+import com.millionaire_project.millionaire_project.entity.CredentialEntity;
 import com.millionaire_project.millionaire_project.service.CredentialService;
 import com.millionaire_project.millionaire_project.util.ResponseBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,5 +37,10 @@ public class CredentialController {
     @GetMapping("/fetch")
     public ResponseBuilder<Page<CredentialResp>> list(@RequestBody FilterPropertyReq filterPropertyReq) {
         return ResponseBuilder.success(credentialService.list(filterPropertyReq));
+    }
+
+    @PostMapping("/consume")
+    public ResponseBuilder<CredentialEntity> consume(@RequestBody ConsumeReq req) {
+        return credentialService.consume(req);
     }
 }
