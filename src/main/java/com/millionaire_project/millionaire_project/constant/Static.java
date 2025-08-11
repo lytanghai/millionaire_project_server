@@ -26,7 +26,7 @@ public class Static {
     public static final String CRYPTO_PANIC_BASE_URL = "https://cryptopanic.com/api/developer/v2/posts/";
 
     public static final String CURRENCIES = "currencies";
-    public static final String AUTH_TOKEN = "currencies";
+    public static final String AUTH_TOKEN = "auth_token";
 
     public static final Map<String,String> URL_MAPPING = (Map<String, String>) new HashMap<>()
             .put("CRYPTO_PANIC", CRYPTO_PANIC_BASE_URL);

@@ -54,6 +54,8 @@ public class CryptoPanicService {
         queryParams.put(Static.AUTH_TOKEN, entity.getApiKey());
         queryParams.put(Static.CURRENCIES, currency);
 
+        System.out.println("URL: " + Static.CRYPTO_PANIC_BASE_URL + queryParams);
+
         String result = client.doGet(Static.CRYPTO_PANIC_BASE_URL, queryParams, null, String.class);
 
         ApiResponder resultBuilder = new ApiResponder();
