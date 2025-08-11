@@ -23,9 +23,10 @@ public class Static {
     public static final ZoneId PHNOM_PENH = ZoneId.of("Asia/Phnom_Penh");
 
 
-    public static final String CRYPTO_PANIC_BASE_URL = "https://cryptopanic.com/api/developer/v2/posts/?auth_token=";
+    public static final String CRYPTO_PANIC_BASE_URL = "https://cryptopanic.com/api/developer/v2/posts/";
 
     public static final String CURRENCIES = "currencies";
+    public static final String AUTH_TOKEN = "currencies";
 
     public static final Map<String,String> URL_MAPPING = (Map<String, String>) new HashMap<>()
             .put("CRYPTO_PANIC", CRYPTO_PANIC_BASE_URL);

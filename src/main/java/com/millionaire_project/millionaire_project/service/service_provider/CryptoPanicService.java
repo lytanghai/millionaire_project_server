@@ -10,6 +10,7 @@ import com.millionaire_project.millionaire_project.entity.CredentialEntity;
 import com.millionaire_project.millionaire_project.exception.ServiceException;
 import com.millionaire_project.millionaire_project.repository.CredentialRepository;
 import com.millionaire_project.millionaire_project.util.ResponseBuilder;
+import com.millionaire_project.millionaire_project.util.RestTemplateHelper;
 import com.millionaire_project.millionaire_project.util.RestTemplateHttp;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -21,10 +22,7 @@ import org.springframework.stereotype.Service;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @ServiceProvider(partnerCode = "0001", partnerName = "crypto_panic")
@@ -51,21 +49,13 @@ public class CryptoPanicService {
 
         String currency = payloadReq.getOrDefault("currency", "").toString();
 
-        String urlBuilder = new StringBuilder()
-                .append(Static.CRYPTO_PANIC_BASE_URL)
-                .append(entity.getApiKey())
-                .append("&currencies=")
-                .append(currency)
-                .toString();
+        RestTemplateHelper client = new RestTemplateHelper();
+        Map<String, String> queryParams = new HashMap<>();
+        queryParams.put(Static.AUTH_TOKEN, entity.getApiKey());
+        queryParams.put(Static.CURRENCIES, currency);
 
-        String result = RestTemplateHttp.sendRequest(urlBuilder,
-                HttpMethod.GET,
-                null,
-                null ,
-                null,
-                10000,
-                true);
-        log.info("Response : []", result);
+        String result = client.doGet(Static.CRYPTO_PANIC_BASE_URL, queryParams, null, String.class);
+
         ApiResponder resultBuilder = new ApiResponder();
         resultBuilder.setContent(new JSONObject(result));
 
