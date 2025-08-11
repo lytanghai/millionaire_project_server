@@ -11,18 +11,18 @@ import com.millionaire_project.millionaire_project.exception.ServiceException;
 import com.millionaire_project.millionaire_project.repository.CredentialRepository;
 import com.millionaire_project.millionaire_project.util.ResponseBuilder;
 import com.millionaire_project.millionaire_project.util.RestTemplateHelper;
-import com.millionaire_project.millionaire_project.util.RestTemplateHttp;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.net.URI;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 @ServiceProvider(partnerCode = "0001", partnerName = "crypto_panic")
@@ -32,8 +32,8 @@ public class CryptoPanicService {
     @Autowired private PartnerServiceRegistry registry;
     @Autowired private CredentialRepository credentialRepository;
 
-    public ResponseBuilder<ApiResponder> triggerApi(ApiRequester dto) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        if(dto.getTopicName().isEmpty())
+    public ResponseBuilder<ApiResponder> triggerApi(ApiRequester dto) {
+        if (dto.getTopicName() == null || dto.getTopicName().isEmpty())
             throw new ServiceException(ApplicationCode.E006.getCode(), ApplicationCode.E006.getMessage());
 
         String providerName = dto.getProviderName();
@@ -43,24 +43,28 @@ public class CryptoPanicService {
                 .filter(c -> c.getProviderName().equalsIgnoreCase(providerName))
                 .max(Comparator.comparingInt(CredentialEntity::getRemaining));
 
-        CredentialEntity entity = getRemaining.get();
+        CredentialEntity entity = getRemaining.orElseThrow(() ->
+                new ServiceException(ApplicationCode.W001.getCode(), ApplicationCode.W001.getMessage()));
 
-        Map<String,Object> payloadReq = dto.getPayload();
-
+        Map<String, Object> payloadReq = dto.getPayload();
         String currency = payloadReq.getOrDefault("currency", "").toString();
 
+        URI fullUri = UriComponentsBuilder.fromHttpUrl(Static.CRYPTO_PANIC_BASE_URL)
+                .queryParam(Static.AUTH_TOKEN, entity.getApiKey())
+                .queryParam(Static.CURRENCIES, currency)
+                .build()
+                .encode()
+                .toUri();
+
+        log.info("Calling external API with URL: {}", fullUri);
+
         RestTemplateHelper client = new RestTemplateHelper();
-        Map<String, String> queryParams = new HashMap<>();
-        queryParams.put(Static.AUTH_TOKEN, entity.getApiKey());
-        queryParams.put(Static.CURRENCIES, currency);
-
-        System.out.println("URL: " + Static.CRYPTO_PANIC_BASE_URL + queryParams);
-
-        String result = client.doGet(Static.CRYPTO_PANIC_BASE_URL, queryParams, null, String.class);
+        String result = client.doGet(fullUri.toString(), null, null, String.class);
 
         ApiResponder resultBuilder = new ApiResponder();
         resultBuilder.setContent(new JSONObject(result));
 
         return ResponseBuilder.success(resultBuilder);
     }
+
 }

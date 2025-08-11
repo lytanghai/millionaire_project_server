@@ -10,10 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-
 @RestController
 @RequestMapping("/service")
 public class ProviderController {
@@ -21,7 +17,7 @@ public class ProviderController {
     @Autowired private CryptoPanicService service;
 
     @PostMapping("/trigger")
-    public ResponseBuilder<ApiResponder> check(@RequestBody ApiRequester dto) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+    public ResponseBuilder<ApiResponder> check(@RequestBody ApiRequester dto) {
         return service.triggerApi(dto);
     }
 }
