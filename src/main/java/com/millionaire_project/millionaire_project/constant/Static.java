@@ -8,7 +8,7 @@ import java.util.Map;
 public class Static {
 
 
-    public static final String CREDENTIAL_SEQ = "expense_tracker_id_seq";
+    public static final String CREDENTIAL_SEQ = "credential_seq";
 
     //COMMON
     public static final String COMMA = ",";
