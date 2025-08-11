@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 public class ApiResponder {
     private String url;
     private String topic;
-    private JSONObject content;
+    private DynamicResponse content;
     private HttpStatus status;
 
     public String getUrl() {
@@ -25,11 +25,11 @@ public class ApiResponder {
         this.topic = topic;
     }
 
-    public JSONObject getContent() {
+    public DynamicResponse getContent() {
         return content;
     }
 
-    public void setContent(JSONObject content) {
+    public void setContent(DynamicResponse content) {
         this.content = content;
     }
 

@@ -1,14 +1,18 @@
 package com.millionaire_project.millionaire_project.service.service_provider;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.millionaire_project.millionaire_project.annotation.PartnerServiceRegistry;
 import com.millionaire_project.millionaire_project.annotation.ServiceProvider;
 import com.millionaire_project.millionaire_project.constant.ApplicationCode;
 import com.millionaire_project.millionaire_project.constant.Static;
 import com.millionaire_project.millionaire_project.dto.req.ApiRequester;
 import com.millionaire_project.millionaire_project.dto.res.ApiResponder;
+import com.millionaire_project.millionaire_project.dto.res.DynamicResponse;
 import com.millionaire_project.millionaire_project.entity.CredentialEntity;
 import com.millionaire_project.millionaire_project.exception.ServiceException;
 import com.millionaire_project.millionaire_project.repository.CredentialRepository;
+import com.millionaire_project.millionaire_project.service.CredentialService;
 import com.millionaire_project.millionaire_project.util.ResponseBuilder;
 import com.millionaire_project.millionaire_project.util.RestTemplateHelper;
 import org.json.JSONObject;
@@ -31,8 +35,9 @@ public class CryptoPanicService {
     private final Logger log = LoggerFactory.getLogger(CryptoPanicService.class);
     @Autowired private PartnerServiceRegistry registry;
     @Autowired private CredentialRepository credentialRepository;
+    @Autowired private CredentialService credentialService;
 
-    public ResponseBuilder<ApiResponder> triggerApi(ApiRequester dto) {
+    public ResponseBuilder<ApiResponder> triggerApi(ApiRequester dto) throws JsonProcessingException {
         if (dto.getTopicName() == null || dto.getTopicName().isEmpty())
             throw new ServiceException(ApplicationCode.E006.getCode(), ApplicationCode.E006.getMessage());
 
@@ -62,7 +67,10 @@ public class CryptoPanicService {
         String result = client.doGet(fullUri.toString(), null, null, String.class);
 
         ApiResponder resultBuilder = new ApiResponder();
-        resultBuilder.setContent(new JSONObject(result));
+        ObjectMapper mapper = new ObjectMapper();
+
+        resultBuilder.setContent(mapper.readValue(result, DynamicResponse.class));
+        credentialService.consume(providerName);
 
         return ResponseBuilder.success(resultBuilder);
     }
