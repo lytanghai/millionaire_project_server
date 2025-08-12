@@ -21,7 +21,7 @@ public class PartnerServiceRegistry implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
-        // Scan all PartnerService beans with @ServiceProvider annotation
+        // Scan all PartnerService beans with @ServiceAPIProvider annotation
         Map<String, PartnerService> beans = context.getBeansOfType(PartnerService.class);
 
         beans.values().forEach(service -> {

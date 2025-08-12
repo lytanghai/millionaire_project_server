@@ -2,6 +2,7 @@ package com.millionaire_project.millionaire_project.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.millionaire_project.millionaire_project.constant.Static;
+import com.millionaire_project.millionaire_project.controller.service_provider.ServiceAPIProvider;
 import com.millionaire_project.millionaire_project.dto.req.ApiRequester;
 import com.millionaire_project.millionaire_project.dto.res.ApiResponder;
 import com.millionaire_project.millionaire_project.service.service_provider.CryptoPanicService;
@@ -12,22 +13,36 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/service")
 @Tag(name = "Service Provider -> Free API", description = "Operations related to API Site")
 public class ProviderController {
 
-    @Autowired private CryptoPanicService service;
+private final Map<String, ServiceAPIProvider> providersMap;
+
+    @Autowired
+    public ProviderController(List<ServiceAPIProvider> providers) {
+        // Build a map from partnerName to provider instance for quick lookup
+        providersMap = providers.stream()
+                .collect(Collectors.toMap(ServiceAPIProvider::getPartnerName, Function.identity()));
+    }
 
     @PostMapping("/trigger")
-    @Operation(
-            summary = "Trigger API Requests To Free API Sites",
-            description = "Crypto Panic: "
-    )
+    @Operation(summary = "Trigger API Requests To Free API Sites")
     public ResponseBuilder<ApiResponder> check(@RequestBody ApiRequester dto) throws JsonProcessingException {
-        return service.triggerApi(dto);
+        String providerName = dto.getProviderName();
+        ServiceAPIProvider provider = providersMap.get(providerName);
+
+        if (provider == null) {
+            throw new IllegalArgumentException("Provider not found: " + providerName);
+        }
+
+        return provider.trigger(dto);
     }
 
     @GetMapping("/help")
