@@ -33,7 +33,7 @@ public class CoinMarketCapService implements ServiceAPIProvider {
             JSONObject payload = new JSONObject(apiRequester.getPayload());
             String topicName = payload.optString("topic_operation");
             TopicOperation topic = TopicOperation.fromTopicName(topicName);
-            String coinId = CommonUtil.getSymbolById(payload.optString("coin"));
+            String coinId = payload.optString("coin");
             if (topic != null && coinId != null) {
                 switch (topicName) {
                     case Static.CMC_MARKET_PAIR_LATEST: market.getMarketPairLatest(coinId, topic.getEndpoint(), apiRequester.getProviderName());

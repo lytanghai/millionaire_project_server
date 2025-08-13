@@ -13,7 +13,6 @@ import com.millionaire_project.millionaire_project.util.RestTemplateHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -32,14 +31,15 @@ public class Market {
     public ResponseBuilder<ApiResponder> getMarketPairLatest(String coinId, String uri, String providerName) {
         UriComponentsBuilder builder = UriComponentsBuilder
                 .fromHttpUrl(Static.COIN_MARKET_CAP_BASE_URL)
-                .path(uri.replace("{symbol}", coinId.toUpperCase(Locale.ROOT)));
+                .path("/market-pairs/latest")
+                .queryParam("symbol", coinId.toUpperCase(Locale.ROOT))
+                .queryParam("convert", "USD");
 
         URI fullUri = builder.build().encode().toUri();
         System.out.println("CMC URL: " + fullUri);
 
         try {
             RestTemplateHelper client = new RestTemplateHelper();
-
 
             Map<String, String> headers = new HashMap<>();
             headers.put("X-CMC_PRO_API_KEY", "57cd5930-852b-478f-939e-0c96c37b0016");
