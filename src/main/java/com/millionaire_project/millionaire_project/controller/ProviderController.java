@@ -27,17 +27,15 @@ private final Map<String, ServiceAPIProvider> providersMap;
 
     @Autowired
     public ProviderController(List<ServiceAPIProvider> providers) {
-        // Build a map from partnerName to provider instance for quick lookup
         providersMap = providers.stream()
                 .collect(Collectors.toMap(ServiceAPIProvider::getPartnerName, Function.identity()));
     }
 
     @PostMapping("/trigger")
     @Operation(summary = "Trigger API Requests To Free API Sites")
-    public ResponseBuilder<ApiResponder> check(@RequestBody ApiRequester dto) throws JsonProcessingException {
+    public ResponseBuilder<ApiResponder> check(@RequestBody ApiRequester dto) throws Exception {
         String providerName = dto.getProviderName();
         ServiceAPIProvider provider = providersMap.get(providerName);
-
         if (provider == null) {
             throw new IllegalArgumentException("Provider not found: " + providerName);
         }

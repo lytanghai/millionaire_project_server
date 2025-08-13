@@ -19,7 +19,10 @@ public class MobileFinanceService implements ServiceAPIProvider {
 
     @Override
     public ResponseBuilder<ApiResponder> trigger(ApiRequester apiRequester) throws JsonProcessingException {
-        System.out.println("MOPB");
+        if(apiRequester != null) {
+
+        }
+
         return null;
     }
 }

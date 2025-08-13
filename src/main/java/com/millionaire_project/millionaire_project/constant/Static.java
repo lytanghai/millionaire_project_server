@@ -22,11 +22,19 @@ public class Static {
 
 
     public static final String CRYPTO_PANIC_BASE_URL = "https://cryptopanic.com/api/developer/v2/posts/";
+    public static final String COIN_PAPRIRIKA_BASE_URL = "https://api.coinpaprika.com/v1/";
+
 
     public static final String CURRENCIES = "currencies";
     public static final String AUTH_TOKEN = "auth_token";
     public static final String KIND = "kind";
     public static final String CURRENCY = "currency";
     public static final String FILTER = "filter";
+    public static final String COIN_ID = "{coin_id}";
+
+
+//    Topic Opertaion
+    public static final String GET_COIN_DETAIL = "GET_COIN_DETAIL";
+    public static final String GET_TODAY_OHLC = "GET_TODAY_OHLC";
 
 }

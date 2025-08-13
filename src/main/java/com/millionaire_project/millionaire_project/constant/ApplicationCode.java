@@ -10,9 +10,12 @@ public enum ApplicationCode {
     E006("E006", "Topic Name does not exist!"),
     E007("E007", "Provider Name does not exist!"),
 
+    W001("W001","Records not found"),
 
+    S01("S01","This coin is not registered in our system!"),
+    S02("S02","Topic Operation is not registered in our system!"),
 
-    W001("W001","Records not found")
+    ERSP01("ERSP01", "Error From Service Provider!")
     ;
 
     private String code;

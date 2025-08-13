@@ -141,7 +141,7 @@ public class CryptoPanicService implements ServiceAPIProvider {
                     "          \"id\": 24063534,\n" +
                     "          \"slug\": \"As-Ethereum-rips-and-smaller-caps-follow-is-alt-season-finally-here\",\n" +
                     "          \"title\": \"As Ethereum rips and smaller caps follow, is alt season finally here?\",\n" +
-                    "          \"description\": \"Altcoin traders can hardly contain themselves as the long-awaited breakout appears to have begun. ETH posted gains of over 20% the last seven days and smaller cap coins like SOL, DOGE, and BNB are close behind, with Chainlink’s LINK token up 30% in the same timeframe.\",\n" +
+                    "          \"description\": \"Altcoin traders can hardly contain themselves as the long-awaited breakout appears to have begun. ETH posted gains of over 20% the last seven days and smaller cap Coins like SOL, DOGE, and BNB are close behind, with Chainlink’s LINK token up 30% in the same timeframe.\",\n" +
                     "          \"published_at\": \"2025-08-09T11:41:55Z\",\n" +
                     "          \"created_at\": \"2025-08-09T11:41:55+00:00\",\n" +
                     "          \"kind\": \"news\"\n" +

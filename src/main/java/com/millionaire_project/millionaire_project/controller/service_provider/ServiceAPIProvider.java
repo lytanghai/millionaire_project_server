@@ -8,5 +8,5 @@ import com.millionaire_project.millionaire_project.util.ResponseBuilder;
 public interface ServiceAPIProvider {
     String getPartnerName();
 
-    ResponseBuilder<ApiResponder> trigger(ApiRequester apiRequester) throws JsonProcessingException;
+    ResponseBuilder<ApiResponder> trigger(ApiRequester apiRequester) throws Exception;
 }
