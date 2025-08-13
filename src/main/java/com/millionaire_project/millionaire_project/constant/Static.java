@@ -23,6 +23,7 @@ public class Static {
 
     public static final String CRYPTO_PANIC_BASE_URL = "https://cryptopanic.com/api/developer/v2/posts/";
     public static final String COIN_PAPRIRIKA_BASE_URL = "https://api.coinpaprika.com/v1/";
+    public static final String COIN_MARKET_CAP_BASE_URL = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/";
 
 
     public static final String CURRENCIES = "currencies";
@@ -36,5 +37,7 @@ public class Static {
 //    Topic Opertaion
     public static final String GET_COIN_DETAIL = "GET_COIN_DETAIL";
     public static final String GET_TODAY_OHLC = "GET_TODAY_OHLC";
+    public static final String CMC_MARKET_PAIR_LATEST = "CMC_MARKET_PAIR_LATEST";
+
 
 }

@@ -3,7 +3,8 @@ package com.millionaire_project.millionaire_project.constant;
 public enum TopicOperation {
 
     GET_COIN_DETAIL(Static.GET_COIN_DETAIL,"coins/{coin_id}","Returns detailed descriptive information about a single coin, without price or volume data"),
-    GET_TODAY_OHLC(Static.GET_TODAY_OHLC, "coins/{coin_id}/ohlcv/today","Returns Open/High/Low/Close values with volume and market capitalization for the current day. Data can change every each request until actual close of the day at 23:59:59")
+    GET_TODAY_OHLC(Static.GET_TODAY_OHLC, "coins/{coin_id}/ohlcv/today","Returns Open/High/Low/Close values with volume and market capitalization for the current day. Data can change every each request until actual close of the day at 23:59:59"),
+    CMC_MARKET_PAIR_LATEST(Static.CMC_MARKET_PAIR_LATEST, "/market-pairs/latest?symbol={symbol}&convert=USD", "")
     ;
 
 

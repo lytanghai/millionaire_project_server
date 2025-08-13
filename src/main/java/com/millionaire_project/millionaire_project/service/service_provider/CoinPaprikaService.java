@@ -1,7 +1,5 @@
 package com.millionaire_project.millionaire_project.service.service_provider;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.millionaire_project.millionaire_project.annotation.ServiceProvider;
 import com.millionaire_project.millionaire_project.constant.ApplicationCode;
 import com.millionaire_project.millionaire_project.constant.Static;
@@ -9,35 +7,19 @@ import com.millionaire_project.millionaire_project.constant.TopicOperation;
 import com.millionaire_project.millionaire_project.controller.service_provider.ServiceAPIProvider;
 import com.millionaire_project.millionaire_project.dto.req.ApiRequester;
 import com.millionaire_project.millionaire_project.dto.res.ApiResponder;
-import com.millionaire_project.millionaire_project.dto.res.CoinPairSymbol;
 import com.millionaire_project.millionaire_project.exception.ServiceException;
 import com.millionaire_project.millionaire_project.service.service_provider.coin_paprika_operation.coins.Coins;
+import com.millionaire_project.millionaire_project.util.CommonUtil;
 import com.millionaire_project.millionaire_project.util.ResponseBuilder;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
-
-import java.io.InputStream;
-import java.util.List;
 
 @Service
 @ServiceProvider(partnerCode = "0003", partnerName = "coin_paprika")
 public class CoinPaprikaService implements ServiceAPIProvider {
 
     @Autowired private Coins coinsService;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
-    public String getSymbolById(String symbol) throws Exception {
-        InputStream is = new ClassPathResource("static/pair-symbol.json").getInputStream();
-        List<CoinPairSymbol> coins = objectMapper.readValue(is, new TypeReference<>() {});
-        return coins.stream()
-                .filter(c -> c.getId().split("-")[0].equalsIgnoreCase(symbol))
-                .map(CoinPairSymbol::getId) // ✅ Return the full ID
-                .findFirst()
-                .orElse(null);
-    }
 
     @Override
     public String getPartnerName() {
@@ -50,16 +32,13 @@ public class CoinPaprikaService implements ServiceAPIProvider {
             JSONObject payload = new JSONObject(apiRequester.getPayload());
             String topicName = payload.optString("topic_operation");
             TopicOperation topic = TopicOperation.fromTopicName(topicName);
-            String coinId = getSymbolById(payload.optString("coin"));
+            String coinId = CommonUtil.getSymbolById(payload.optString("coin"));
             if (topic != null && coinId != null) {
                 switch (topicName) {
                     case Static.GET_COIN_DETAIL : return coinsService.getCoinDetail(coinId, topic.getEndpoint(), apiRequester.getProviderName());
-
                     case Static.GET_TODAY_OHLC : return coinsService.getTodayOHLC(coinId, topic.getEndpoint(), apiRequester.getProviderName());
-
                     default: throw new ServiceException(ApplicationCode.S02.getCode(),ApplicationCode.S02.getMessage());
                 }
-
             } else {
                 throw new ServiceException(ApplicationCode.S01.getCode(),ApplicationCode.S01.getMessage());
             }
