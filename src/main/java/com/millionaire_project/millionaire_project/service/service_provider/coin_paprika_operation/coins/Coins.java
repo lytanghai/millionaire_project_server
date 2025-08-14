@@ -102,7 +102,7 @@ public class Coins {
             resultBuilder.setContent(objectMapper.readValue(customResponse.toString(), DynamicResponse.class));
 
             credentialService.consume(providerName);
-
+            log.info("COIN_PAPRIRIKA_BASE_URL COMPLETED!");
             return ResponseBuilder.success(resultBuilder);
         } catch(ServiceException | JsonProcessingException e){
             throw new ServiceException(ApplicationCode.ERSP01.getCode(), ApplicationCode.ERSP01.getMessage());

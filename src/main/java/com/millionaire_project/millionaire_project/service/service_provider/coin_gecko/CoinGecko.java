@@ -49,6 +49,9 @@ public class CoinGecko {
 
             Map<String, String> headers = new HashMap<>();
             headers.put(Static.COIN_GECKO_API_HEADER, entity.getApiKey());
+            headers.put("Accept", "application/json");
+
+            log.info("full build request {} {}",  builder.build().encode().toUri(), headers);
 
             RestTemplateHelper client = new RestTemplateHelper();
             String result = client.doGet(
@@ -57,9 +60,6 @@ public class CoinGecko {
                     headers,
                     String.class);
 //            String result = loadMockResponse();
-
-            log.info("full build request {} {}",  builder.build().encode().toUri(), headers );
-
 
             JSONObject resultObject = new JSONObject(result);
             JSONObject custom = new JSONObject();
@@ -103,6 +103,7 @@ public class CoinGecko {
             resultBuilder.setContent(objectMapper.readValue(custom.toString(), DynamicResponse.class));
 
             credentialService.consume(providerName);
+            log.info("COIN GECKO COMPLETED!");
             return ResponseBuilder.success(resultBuilder);
 
         } catch(ServiceException e){
