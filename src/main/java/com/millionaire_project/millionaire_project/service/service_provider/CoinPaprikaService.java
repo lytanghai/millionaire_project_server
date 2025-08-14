@@ -8,7 +8,7 @@ import com.millionaire_project.millionaire_project.controller.service_provider.S
 import com.millionaire_project.millionaire_project.dto.req.ApiRequester;
 import com.millionaire_project.millionaire_project.dto.res.ApiResponder;
 import com.millionaire_project.millionaire_project.exception.ServiceException;
-import com.millionaire_project.millionaire_project.service.service_provider.coin_paprika_operation.coins.Coins;
+import com.millionaire_project.millionaire_project.service.service_provider.coin_paprika_operation.CoinPaprika;
 import com.millionaire_project.millionaire_project.util.CommonUtil;
 import com.millionaire_project.millionaire_project.util.ResponseBuilder;
 import org.json.JSONObject;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 @ServiceProvider(partnerCode = "0003", partnerName = "coin_paprika")
 public class CoinPaprikaService implements ServiceAPIProvider {
 
-    @Autowired private Coins coinsService;
+    @Autowired private CoinPaprika coinPaprikaService;
 
     @Override
     public String getPartnerName() {
@@ -37,8 +37,8 @@ public class CoinPaprikaService implements ServiceAPIProvider {
                     CommonUtil.getSymbolById(payload.optString("coin"), 1);
             if (topic != null && coinId != null) {
                 switch (topicName) {
-                    case Static.GET_COIN_DETAIL : return coinsService.getCoinDetail(coinId, topic.getEndpoint(), apiRequester.getProviderName());
-                    case Static.GET_TODAY_OHLC : return coinsService.getTodayOHLC(coinId, topic.getEndpoint(), apiRequester.getProviderName());
+                    case Static.GET_COIN_DETAIL : return coinPaprikaService.getCoinDetail(coinId, topic.getEndpoint(), apiRequester.getProviderName());
+                    case Static.GET_TODAY_OHLC : return coinPaprikaService.getTodayOHLC(coinId, topic.getEndpoint(), apiRequester.getProviderName());
                     default: throw new ServiceException(ApplicationCode.S02.getCode(),ApplicationCode.S02.getMessage());
                 }
             } else {

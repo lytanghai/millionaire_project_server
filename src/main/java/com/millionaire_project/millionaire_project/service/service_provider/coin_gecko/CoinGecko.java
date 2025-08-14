@@ -39,13 +39,13 @@ public class CoinGecko {
                 .path(uri.replace(Static.COIN_ID, coinId));
 
         try {
-            List<CredentialEntity> credentialObject = credentialRepository.findByProviderName(providerName);
-            Optional<CredentialEntity> getRemaining = credentialObject.stream()
-                    .filter(c -> c.getProviderName().equalsIgnoreCase(providerName))
-                    .max(Comparator.comparingInt(CredentialEntity::getRemaining));
-
-            CredentialEntity entity = getRemaining.orElseThrow(() ->
-                    new ServiceException(ApplicationCode.W001.getCode(), ApplicationCode.W001.getMessage()));
+//            List<CredentialEntity> credentialObject = credentialRepository.findByProviderName(providerName);
+//            Optional<CredentialEntity> getRemaining = credentialObject.stream()
+//                    .filter(c -> c.getProviderName().equalsIgnoreCase(providerName))
+//                    .max(Comparator.comparingInt(CredentialEntity::getRemaining));
+//
+//            CredentialEntity entity = getRemaining.orElseThrow(() ->
+//                    new ServiceException(ApplicationCode.W001.getCode(), ApplicationCode.W001.getMessage()));
 
             Map<String, String> headers = new HashMap<>();
 //            headers.put(Static.COIN_GECKO_API_HEADER, entity.getApiKey());
@@ -102,7 +102,7 @@ public class CoinGecko {
 
             resultBuilder.setContent(objectMapper.readValue(custom.toString(), DynamicResponse.class));
 
-            credentialService.consume(providerName);
+//            credentialService.consume(providerName);
             log.info("COIN GECKO COMPLETED!");
             return ResponseBuilder.success(resultBuilder);
 

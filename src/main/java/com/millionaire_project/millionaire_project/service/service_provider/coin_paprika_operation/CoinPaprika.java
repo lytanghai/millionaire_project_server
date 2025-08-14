@@ -1,4 +1,4 @@
-package com.millionaire_project.millionaire_project.service.service_provider.coin_paprika_operation.coins;
+package com.millionaire_project.millionaire_project.service.service_provider.coin_paprika_operation;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,8 +23,8 @@ import java.net.URL;
 import java.util.List;
 
 @Service
-public class Coins {
-    private final Logger log = LoggerFactory.getLogger(Coins.class);
+public class CoinPaprika {
+    private final Logger log = LoggerFactory.getLogger(CoinPaprika.class);
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
@@ -101,7 +101,7 @@ public class Coins {
 
             resultBuilder.setContent(objectMapper.readValue(customResponse.toString(), DynamicResponse.class));
 
-            credentialService.consume(providerName);
+//            credentialService.consume(providerName);
             log.info("COIN_PAPRIRIKA_BASE_URL COMPLETED!");
             return ResponseBuilder.success(resultBuilder);
         } catch(ServiceException | JsonProcessingException e){
@@ -133,7 +133,7 @@ public class Coins {
             DynamicResponse dynamicResponse = objectMapper.readValue(firstObject.toString(), DynamicResponse.class);
             resultBuilder.setContent(dynamicResponse);
 
-            credentialService.consume(providerName);
+//            credentialService.consume(providerName);
 
             return ResponseBuilder.success(resultBuilder);
         }catch (ServiceException | JsonProcessingException ex) {
