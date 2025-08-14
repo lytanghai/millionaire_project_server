@@ -32,7 +32,7 @@ public class CoinPaprikaService implements ServiceAPIProvider {
             JSONObject payload = new JSONObject(apiRequester.getPayload());
             String topicName = payload.optString("topic_operation");
             TopicOperation topic = TopicOperation.fromTopicName(topicName);
-            String coinId = CommonUtil.getSymbolById(payload.optString("coin"));
+            String coinId = CommonUtil.getSymbolById(payload.optString("coin"), 0);
             if (topic != null && coinId != null) {
                 switch (topicName) {
                     case Static.GET_COIN_DETAIL : return coinsService.getCoinDetail(coinId, topic.getEndpoint(), apiRequester.getProviderName());

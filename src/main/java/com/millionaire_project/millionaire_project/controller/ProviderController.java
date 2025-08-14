@@ -1,6 +1,5 @@
 package com.millionaire_project.millionaire_project.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.millionaire_project.millionaire_project.constant.Static;
 import com.millionaire_project.millionaire_project.controller.service_provider.ServiceAPIProvider;
 import com.millionaire_project.millionaire_project.dto.req.ApiRequester;

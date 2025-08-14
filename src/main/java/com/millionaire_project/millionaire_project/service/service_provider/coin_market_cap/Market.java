@@ -13,6 +13,7 @@ import com.millionaire_project.millionaire_project.util.RestTemplateHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -36,7 +37,6 @@ public class Market {
                 .queryParam("convert", "USD");
 
         URI fullUri = builder.build().encode().toUri();
-        System.out.println("CMC URL: " + fullUri);
 
         try {
             RestTemplateHelper client = new RestTemplateHelper();

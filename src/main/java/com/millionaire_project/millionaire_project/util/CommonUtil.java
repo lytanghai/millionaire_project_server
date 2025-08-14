@@ -10,13 +10,17 @@ import java.util.List;
 
 public class CommonUtil {
 
-    public static String getSymbolById(String symbol) throws Exception {
+    public static String getSymbolById(String symbol, int index) throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         InputStream is = new ClassPathResource("static/pair-symbol.json").getInputStream();
         List<CoinPairSymbol> coins = objectMapper.readValue(is, new TypeReference<>() {});
+
         return coins.stream()
-                .filter(c -> c.getId().split("-")[0].equalsIgnoreCase(symbol))
-                .map(CoinPairSymbol::getId) // ✅ Return the full ID
+                .map(CoinPairSymbol::getId)
+                .map(id -> {
+                    String[] parts = id.split("-");
+                    return parts[index];
+                })
                 .findFirst()
                 .orElse(null);
     }

@@ -29,7 +29,6 @@ public class Coins {
     private CredentialService credentialService;
 
     public ResponseBuilder<ApiResponder> getCoinDetail(String coinId, String uri, String providerName) {
-
         UriComponentsBuilder builder = UriComponentsBuilder
                 .fromHttpUrl(Static.COIN_PAPRIRIKA_BASE_URL)
                 .path(uri.replace(Static.COIN_ID, coinId));
