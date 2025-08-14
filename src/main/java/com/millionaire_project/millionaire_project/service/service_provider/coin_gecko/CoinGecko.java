@@ -15,7 +15,12 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.nio.file.Files;
@@ -47,18 +52,26 @@ public class CoinGecko {
 //            CredentialEntity entity = getRemaining.orElseThrow(() ->
 //                    new ServiceException(ApplicationCode.W001.getCode(), ApplicationCode.W001.getMessage()));
 
-            Map<String, String> headers = new HashMap<>();
-//            headers.put(Static.COIN_GECKO_API_HEADER, entity.getApiKey());
-            headers.put("Accept", "application/json");
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Accept", "application/json");
+            headers.set("User-Agent",
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
+                            "AppleWebKit/537.36 (KHTML, like Gecko) " +
+                            "Chrome/115.0 Safari/537.36"
+            );
 
-            log.info("full build request {} {}",  builder.build().encode().toUri(), headers);
+            log.info("Full build request {} {}", builder.build().encode().toUri(), headers);
 
-            RestTemplateHelper client = new RestTemplateHelper();
-            String result = client.doGet(
-                    builder.build().encode().toUri().toString(),
-                    null,
-                    headers,
-                    String.class);
+            HttpEntity<Void> entityRequest = new HttpEntity<>(headers);
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<String> response = restTemplate.exchange(
+                    builder.build().encode().toUri(),
+                    HttpMethod.GET,
+                    entityRequest,
+                    String.class
+            );
+
+            String result = response.getBody();
 //            String result = loadMockResponse();
 
             JSONObject resultObject = new JSONObject(result);
