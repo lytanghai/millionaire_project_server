@@ -51,12 +51,12 @@ public class CoinGecko {
             headers.put(Static.COIN_GECKO_API_HEADER, entity.getApiKey());
 
             RestTemplateHelper client = new RestTemplateHelper();
-//            String result = client.doGet(
-//                    builder.build().encode().toUri().toString(),
-//                    null,
-//                    headers,
-//                    String.class);
-            String result = loadMockResponse();
+            String result = client.doGet(
+                    builder.build().encode().toUri().toString(),
+                    null,
+                    headers,
+                    String.class);
+//            String result = loadMockResponse();
 
             log.info("full build request {} {}",  builder.build().encode().toUri(), headers );
 
