@@ -48,7 +48,7 @@ public class CoinGecko {
                     new ServiceException(ApplicationCode.W001.getCode(), ApplicationCode.W001.getMessage()));
 
             Map<String, String> headers = new HashMap<>();
-            headers.put(Static.COIN_GECKO_API_HEADER, entity.getApiKey());
+//            headers.put(Static.COIN_GECKO_API_HEADER, entity.getApiKey());
             headers.put("Accept", "application/json");
 
             log.info("full build request {} {}",  builder.build().encode().toUri(), headers);
