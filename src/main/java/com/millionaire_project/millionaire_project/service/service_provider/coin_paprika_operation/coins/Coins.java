@@ -12,6 +12,8 @@ import com.millionaire_project.millionaire_project.util.ResponseBuilder;
 import com.millionaire_project.millionaire_project.util.RestTemplateHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -22,7 +24,7 @@ import java.util.List;
 
 @Service
 public class Coins {
-
+    private final Logger log = LoggerFactory.getLogger(Coins.class);
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
@@ -41,6 +43,7 @@ public class Coins {
                     null,
                     null,
                     String.class);
+            log.info("full build request for coin paprika{}",  builder.build().encode().toUri());
 
             JSONObject resultObject = new JSONObject(result);
 
