@@ -5,7 +5,9 @@ import com.millionaire_project.millionaire_project.constant.ApplicationCode;
 import com.millionaire_project.millionaire_project.constant.Static;
 import com.millionaire_project.millionaire_project.dto.res.ApiResponder;
 import com.millionaire_project.millionaire_project.dto.res.DynamicResponse;
+import com.millionaire_project.millionaire_project.entity.CredentialEntity;
 import com.millionaire_project.millionaire_project.exception.ServiceException;
+import com.millionaire_project.millionaire_project.repository.CredentialRepository;
 import com.millionaire_project.millionaire_project.service.CredentialService;
 import com.millionaire_project.millionaire_project.util.ResponseBuilder;
 import com.millionaire_project.millionaire_project.util.RestTemplateHelper;
@@ -18,6 +20,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.*;
 
 @Service
 public class CoinGecko {
@@ -27,20 +30,33 @@ public class CoinGecko {
     @Autowired
     private CredentialService credentialService;
 
+    @Autowired
+    private CredentialRepository credentialRepository;
+
     public ResponseBuilder<ApiResponder> getCoinDetail(String coinId, String uri, String providerName) {
         UriComponentsBuilder builder = UriComponentsBuilder
                 .fromHttpUrl(Static.COIN_GECKO_CAP_BASE_URL)
                 .path(uri.replace(Static.COIN_ID, coinId));
 
         try {
+            List<CredentialEntity> credentialObject = credentialRepository.findByProviderName(providerName);
+            Optional<CredentialEntity> getRemaining = credentialObject.stream()
+                    .filter(c -> c.getProviderName().equalsIgnoreCase(providerName))
+                    .max(Comparator.comparingInt(CredentialEntity::getRemaining));
+
+            CredentialEntity entity = getRemaining.orElseThrow(() ->
+                    new ServiceException(ApplicationCode.W001.getCode(), ApplicationCode.W001.getMessage()));
+
+            Map<String, String> headers = new HashMap<>();
+            headers.put(Static.COIN_GECKO_API_HEADER, entity.getApiKey());
 
             RestTemplateHelper client = new RestTemplateHelper();
             String result = client.doGet(
                     builder.build().encode().toUri().toString(),
                     null,
-                    null,
+                    headers,
                     String.class);
-           log.info("Request to url: {}", builder.build().encode().toUri());
+           log.info("full build request {} {}",  builder.build().encode().toUri(), headers );
 
 //            String result = loadMockResponse();
 
