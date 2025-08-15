@@ -29,6 +29,7 @@ public class SecurityConfig {
                 .antMatchers(
                         "/public/auth/login",
                         "/public/report/*",
+                        "/test",
                         "/service/help",
                         "/swagger-ui.html",
                         "/swagger-ui/**",
