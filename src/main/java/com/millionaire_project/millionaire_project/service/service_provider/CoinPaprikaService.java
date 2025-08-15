@@ -35,7 +35,7 @@ public class CoinPaprikaService implements ServiceAPIProvider {
             String coinId = CommonUtil.getSymbolById(payload.optString("coin"), 0)
                     + "-" +
                     CommonUtil.getSymbolById(payload.optString("coin"), 1);
-            if (topic != null && coinId != null) {
+            if (topic != null) {
                 switch (topicName) {
                     case Static.GET_COIN_DETAIL : return coinPaprikaService.getCoinDetail(coinId, topic.getEndpoint(), apiRequester.getProviderName());
                     case Static.GET_TODAY_OHLC : return coinPaprikaService.getTodayOHLC(coinId, topic.getEndpoint(), apiRequester.getProviderName());

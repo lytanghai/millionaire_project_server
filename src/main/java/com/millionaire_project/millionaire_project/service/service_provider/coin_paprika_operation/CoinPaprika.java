@@ -75,6 +75,18 @@ public class CoinPaprika {
             }
             customResponse.put("explorer", listExplorer);
 
+            JSONArray whitepaper = resultObject.optJSONArray("whitepaper", null);
+            JSONObject whitePaperObj = new JSONObject();
+            if (whitepaper != null) {
+                for (int i = 0; i < whitepaper.length(); i++) {
+                    JSONObject each = new JSONObject(whitepaper.get(i).toString());
+                    String link = getSiteNameFromUrl(each.getString("link"));
+                    whitePaperObj.put(link, each.getString("link"));
+                }
+            }
+            customResponse.put("whitepaper", whitePaperObj);
+
+
             JSONArray linkExtended = resultObject.optJSONArray("links_extended", null);
             JSONObject listLinkExplorer = new JSONObject();
 
@@ -101,7 +113,6 @@ public class CoinPaprika {
 
             resultBuilder.setContent(objectMapper.readValue(customResponse.toString(), DynamicResponse.class));
 
-//            credentialService.consume(providerName);
             log.info("COIN_PAPRIRIKA_BASE_URL COMPLETED!");
             return ResponseBuilder.success(resultBuilder);
         } catch(ServiceException | JsonProcessingException e){
@@ -132,8 +143,6 @@ public class CoinPaprika {
             JSONObject firstObject = resultObject.getJSONObject(0);
             DynamicResponse dynamicResponse = objectMapper.readValue(firstObject.toString(), DynamicResponse.class);
             resultBuilder.setContent(dynamicResponse);
-
-//            credentialService.consume(providerName);
 
             return ResponseBuilder.success(resultBuilder);
         }catch (ServiceException | JsonProcessingException ex) {
