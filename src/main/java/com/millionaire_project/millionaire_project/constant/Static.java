@@ -24,7 +24,7 @@ public class Static {
     public static final String CRYPTO_PANIC_BASE_URL = "https://cryptopanic.com/api/developer/v2/posts/";
     public static final String COIN_PAPRIRIKA_BASE_URL = "https://api.coinpaprika.com/v1/";
     public static final String COIN_MARKET_CAP_BASE_URL = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/";
-    public static final String COIN_GECKO_CAP_BASE_URL = "https://api.coingecko.com/api/v3/";
+    public static final String COIN_GECKO_CAP_BASE_URL = "https://api.coingecko.com/api/v3/coins/";
 
 
     public static final String CURRENCIES = "currencies";
