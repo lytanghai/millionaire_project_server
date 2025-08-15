@@ -47,6 +47,8 @@ public class CoinPaprika {
 
             JSONObject resultObject = new JSONObject(result);
 
+            log.info("result: {}", resultObject.toMap());
+
             JSONObject customResponse = new JSONObject();
             customResponse.put("symbol_name", resultObject.optString("name"));
             customResponse.put("symbol", resultObject.optString("symbol"));
