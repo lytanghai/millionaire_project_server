@@ -77,4 +77,10 @@ public class ApiTestController {
         return ResponseBuilder.success(dynamicResponse);
     }
 
+
+    @PostMapping
+    public void sayHello() {
+        System.out.println("HELLO");
+    }
+
 }
