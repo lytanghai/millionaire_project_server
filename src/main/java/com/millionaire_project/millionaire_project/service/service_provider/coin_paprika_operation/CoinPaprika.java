@@ -144,8 +144,6 @@ public class CoinPaprika {
             DynamicResponse dynamicResponse = objectMapper.readValue(finalRes.toString(), DynamicResponse.class);
             resultBuilder.setContent(dynamicResponse);
 
-            log.info(dynamicResponse.toString());
-
             return ResponseBuilder.success(resultBuilder);
         }catch (ServiceException | JsonProcessingException ex) {
             throw new ServiceException(ApplicationCode.ERSP01.getCode(), ApplicationCode.ERSP01.getMessage());
@@ -175,8 +173,6 @@ public class CoinPaprika {
             JSONObject firstObject = resultObject.getJSONObject(0);
             DynamicResponse dynamicResponse = objectMapper.readValue(firstObject.toString(), DynamicResponse.class);
             resultBuilder.setContent(dynamicResponse);
-
-            log.info(dynamicResponse.toString());
 
             return ResponseBuilder.success(resultBuilder);
         }catch (ServiceException | JsonProcessingException ex) {
