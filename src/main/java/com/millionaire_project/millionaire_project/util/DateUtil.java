@@ -24,6 +24,19 @@ public final class DateUtil extends DateUtils {
     private static final DateTimeFormatter PG_TIMESTAMP_FORMATTER =
             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
+
+    public static final String convertUnixToDt(long unixTimestamp) {
+        LocalDateTime dateTime = LocalDateTime.ofInstant(
+                Instant.ofEpochSecond(unixTimestamp),
+                Static.PHNOM_PENH
+        );
+
+        // Define the desired format
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_WITH_TIME_1);
+
+        return dateTime.format(formatter);
+
+    }
     public static boolean isTodayFirstDayOfMonth() {
         LocalDate today = LocalDate.now();
         return today.getDayOfMonth() == 1;

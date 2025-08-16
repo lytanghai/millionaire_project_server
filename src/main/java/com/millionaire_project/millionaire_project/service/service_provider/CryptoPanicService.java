@@ -292,6 +292,7 @@ public class CryptoPanicService implements ServiceAPIProvider {
 
         resultBuilder.setContent(mapper.readValue(result, DynamicResponse.class));
         credentialService.consume(providerName);
+        log.info("CRYPTO_PANIC API COMPLETED!");
 
         return ResponseBuilder.success(resultBuilder);
     }

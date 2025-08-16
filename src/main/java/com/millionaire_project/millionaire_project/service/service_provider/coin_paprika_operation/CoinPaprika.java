@@ -74,18 +74,7 @@ public class CoinPaprika {
                 }
             }
             customResponse.put("explorer", listExplorer);
-
-            JSONArray whitepaper = resultObject.optJSONArray("whitepaper", null);
-            JSONObject whitePaperObj = new JSONObject();
-            if (whitepaper != null) {
-                for (int i = 0; i < whitepaper.length(); i++) {
-                    JSONObject each = new JSONObject(whitepaper.get(i).toString());
-                    String link = getSiteNameFromUrl(each.getString("link"));
-                    whitePaperObj.put(link, each.getString("link"));
-                }
-            }
-            customResponse.put("whitepaper", whitePaperObj);
-
+            customResponse.put("whitepaper", resultObject.optJSONObject("whitepaper").optString("link"));
 
             JSONArray linkExtended = resultObject.optJSONArray("links_extended", null);
             JSONObject listLinkExplorer = new JSONObject();
@@ -120,7 +109,50 @@ public class CoinPaprika {
         }
     }
 
-    public ResponseBuilder<ApiResponder> getTodayOHLC(String coinId, String uri, String providerName) {
+    public ResponseBuilder<ApiResponder> getExchangePlatform(String coinId, String uri, String providerName) {
+        UriComponentsBuilder builder = UriComponentsBuilder
+                .fromHttpUrl(Static.COIN_PAPRIRIKA_BASE_URL)
+                .path(uri.replace(Static.COIN_ID, coinId));
+
+        URI fullUri = builder.build().encode().toUri();
+        try {
+            RestTemplateHelper client = new RestTemplateHelper();
+
+            String result = client.doGet(
+                    fullUri.toString(),
+                    null,
+                    null,
+                    String.class);
+
+            JSONArray resultObject = new JSONArray(result);
+            ApiResponder resultBuilder = new ApiResponder();
+
+            JSONArray arrCus = new JSONArray();
+            for(int i=0 ; i< resultObject.length();i++) {
+                JSONObject each = (JSONObject) resultObject.get(i);
+                JSONObject custom = new JSONObject();
+                custom.put("exchange_name", each.optString("exchange_name"));
+                custom.put("value", each.optJSONObject("quotes").optJSONObject("USD").optBigDecimal("price", null));
+                custom.put("trust_score", each.optString("trust_score"));
+                custom.put("last_updated_at", each.optString("last_updated"));
+                arrCus.put(custom);
+            }
+
+            JSONObject finalRes = new JSONObject();
+            finalRes.put("result", arrCus);
+
+            DynamicResponse dynamicResponse = objectMapper.readValue(finalRes.toString(), DynamicResponse.class);
+            resultBuilder.setContent(dynamicResponse);
+
+            log.info(dynamicResponse.toString());
+
+            return ResponseBuilder.success(resultBuilder);
+        }catch (ServiceException | JsonProcessingException ex) {
+            throw new ServiceException(ApplicationCode.ERSP01.getCode(), ApplicationCode.ERSP01.getMessage());
+        }
+    }
+
+        public ResponseBuilder<ApiResponder> getTodayOHLC(String coinId, String uri, String providerName) {
         UriComponentsBuilder builder = UriComponentsBuilder
                 .fromHttpUrl(Static.COIN_PAPRIRIKA_BASE_URL)
                 .path(uri.replace(Static.COIN_ID, coinId));
@@ -143,6 +175,8 @@ public class CoinPaprika {
             JSONObject firstObject = resultObject.getJSONObject(0);
             DynamicResponse dynamicResponse = objectMapper.readValue(firstObject.toString(), DynamicResponse.class);
             resultBuilder.setContent(dynamicResponse);
+
+            log.info(dynamicResponse.toString());
 
             return ResponseBuilder.success(resultBuilder);
         }catch (ServiceException | JsonProcessingException ex) {

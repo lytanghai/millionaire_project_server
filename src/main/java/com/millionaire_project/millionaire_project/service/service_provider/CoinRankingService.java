@@ -8,7 +8,7 @@ import com.millionaire_project.millionaire_project.controller.service_provider.S
 import com.millionaire_project.millionaire_project.dto.req.ApiRequester;
 import com.millionaire_project.millionaire_project.dto.res.ApiResponder;
 import com.millionaire_project.millionaire_project.exception.ServiceException;
-import com.millionaire_project.millionaire_project.service.service_provider.coin_paprika_operation.CoinPaprika;
+import com.millionaire_project.millionaire_project.service.service_provider.coin_ranking.Coin;
 import com.millionaire_project.millionaire_project.util.CommonUtil;
 import com.millionaire_project.millionaire_project.util.ResponseBuilder;
 import org.json.JSONObject;
@@ -16,14 +16,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-@ServiceProvider(partnerCode = "0003", partnerName = "coin_paprika")
-public class CoinPaprikaService implements ServiceAPIProvider {
+@ServiceProvider(partnerCode = "0005", partnerName = "coin_ranking")
+public class CoinRankingService implements ServiceAPIProvider {
 
-    @Autowired private CoinPaprika coinPaprikaService;
+    @Autowired private Coin coin;
 
     @Override
     public String getPartnerName() {
-        return "coin_paprika";
+        return "coin_ranking";
     }
 
     @Override
@@ -31,14 +31,11 @@ public class CoinPaprikaService implements ServiceAPIProvider {
         if(apiRequester != null) {
             JSONObject payload = new JSONObject(apiRequester.getPayload());
             String topicName = payload.optString("topic_operation");
-            String providerName = apiRequester.getProviderName();
             TopicOperation topic = TopicOperation.fromTopicName(topicName);
-            String coinId = CommonUtil.getSymbolById(payload.optString("coin"), providerName);
+            String coinId = CommonUtil.getCoinUUID(payload.optString("coin"));
             if (topic != null) {
                 switch (topicName) {
-                    case Static.GET_COIN_DETAIL : return coinPaprikaService.getCoinDetail(coinId, topic.getEndpoint(), providerName);
-                    case Static.GET_TODAY_OHLC : return coinPaprikaService.getTodayOHLC(coinId, topic.getEndpoint(), providerName);
-                    case Static.GET_EXCHANGE_PLATFORM: return coinPaprikaService.getExchangePlatform(coinId, topic.getEndpoint(), providerName);
+                    case Static.CR_GET_COIN_DETAIL : return coin.getCoinDetail(coinId, topic.getEndpoint(), apiRequester.getProviderName());
                     default: throw new ServiceException(ApplicationCode.S02.getCode(),ApplicationCode.S02.getMessage());
                 }
             } else {
@@ -47,4 +44,5 @@ public class CoinPaprikaService implements ServiceAPIProvider {
         }
         return null;
     }
+
 }

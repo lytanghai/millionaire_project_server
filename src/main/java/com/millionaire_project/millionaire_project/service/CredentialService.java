@@ -92,7 +92,7 @@ public class CredentialService {
         throw new ServiceException(ApplicationCode.E005.getCode(), ApplicationCode.E005.getMessage());
     }
 
-    private CredentialEntity findCredentialRecord(int id) {
+    public CredentialEntity findCredentialRecord(int id) {
         return credentialRepository.findById(id).orElse(null);
     }
 
@@ -156,6 +156,41 @@ public class CredentialService {
             credentialRepository.save(entity);
 
             return ResponseBuilder.success(entity);
+        }
+    }
+
+    public void updateRemaining(CredentialEntity entity) {
+        entity.setRemaining(entity.getRemaining() -1);
+        if(entity.getRemaining() - 1 == 0)
+            entity.setActive(false);
+
+        credentialRepository.save(entity);
+    }
+
+    public CredentialEntity findTheMostUsages(String providerName) {
+        List<CredentialEntity> credentials = credentialRepository.findByProviderName(providerName);
+
+        if (credentials.isEmpty()) {
+            throw new ServiceException(ApplicationCode.W001.getCode(), ApplicationCode.W001.getMessage());
+        } else {
+            if (DateUtil.isTodayFirstDayOfMonth()) {
+                List<CredentialEntity> toUpdate = credentials.stream()
+                        .filter(c -> DateUtil.refreshBalance(c.getNextRefreshDate()))
+                        .peek(c -> {
+                            c.setRemaining(c.getCapped());
+                            c.setNextRefreshDate(Static.DAY.equals(c.getRefreshType())
+                                    ? DateUtil.getNextDateAtMidnight()
+                                    : DateUtil.getFirstDateOfNextMonthUtilDate());
+                        })
+                        .collect(Collectors.toList());
+                credentialRepository.saveAll(toUpdate);
+            }
+
+            Optional<CredentialEntity> getRemaining = credentials.stream()
+                    .filter(c -> c.getProviderName().equalsIgnoreCase(providerName))
+                    .max(Comparator.comparingInt(CredentialEntity::getRemaining));
+
+            return getRemaining.get();
         }
     }
 }
