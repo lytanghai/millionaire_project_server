@@ -6,6 +6,7 @@ import java.time.ZoneId;
 public class Static {
 
     public static final String CREDENTIAL_SEQ = "credential_seq";
+    public static final String EVENT_SEQ = "event_seq";
 
     //COMMON
     public static final String COMMA = ",";

@@ -14,3 +14,18 @@ CREATE TABLE credential (
     created_at timestamp without time zone,
     CONSTRAINT credential_pkey PRIMARY KEY (id)
 );
+
+--
+
+-- Sequence (Postgres 10+ can use GENERATED instead)
+CREATE SEQUENCE event_seq START 1 INCREMENT 1 NO MINVALUE NO MAXVALUE CACHE 1;
+
+-- Refactored table
+CREATE TABLE event_economic_calendar (
+    id integer NOT NULL DEFAULT nextval('event_seq'),
+    event varchar(255),
+    schedule timestamp,
+    expected varchar(50),
+    created_at timestamp,
+    CONSTRAINT event_pkey PRIMARY KEY (id)
+);

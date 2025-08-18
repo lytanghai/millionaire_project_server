@@ -3,9 +3,11 @@ package com.millionaire_project.millionaire_project.util;
 import com.millionaire_project.millionaire_project.constant.Static;
 import org.apache.commons.lang3.time.DateUtils;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.*;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
@@ -20,12 +22,20 @@ import java.util.Date;
 public final class DateUtil extends DateUtils {
 
     public static final String DATE_WITH_TIME_1 = "dd-MM-yyyy HH:mm:ss";
+    public static final String DATE_WITH_TIME_2 = "dd-MMM-yyyy";
 
     private static final DateTimeFormatter PG_TIMESTAMP_FORMATTER =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss HH:mm:ss");
+
+    public static String[] getCurrentYearMonth() {
+        LocalDate today = LocalDate.now();
+        String year = today.format(DateTimeFormatter.ofPattern("yyyy"));
+        String month = today.format(DateTimeFormatter.ofPattern("MM"));
+        return new String[]{year, month};
+    }
 
 
-    public static final String convertUnixToDt(long unixTimestamp) {
+    public static String convertUnixToDt(long unixTimestamp) {
         LocalDateTime dateTime = LocalDateTime.ofInstant(
                 Instant.ofEpochSecond(unixTimestamp),
                 Static.PHNOM_PENH
