@@ -29,7 +29,15 @@ public class SourceOfNewsController {
             String xmlUrl = "https://www.forexfactory.com/ffcal_week_this.xml";
             URL url = new URL(xmlUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestProperty("User-Agent", "Mozilla/5.0");
+
+            // Important headers to mimic a real browser
+            conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/115.0 Safari/537.36");
+            conn.setRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+            conn.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+            conn.setRequestProperty("Referer", "https://www.forexfactory.com/");
+            conn.setConnectTimeout(5000);
+            conn.setReadTimeout(5000);
+
             InputStream input = conn.getInputStream();
 
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -37,8 +45,6 @@ public class SourceOfNewsController {
             Document doc = builder.parse(input);
 
             NodeList eventNodes = doc.getElementsByTagName("event");
-            System.out.println("Found " + eventNodes.getLength() + " events."); // debug
-
             for (int i = 0; i < eventNodes.getLength(); i++) {
                 Node eventNode = eventNodes.item(i);
                 if (eventNode.getNodeType() == Node.ELEMENT_NODE) {
@@ -54,9 +60,11 @@ public class SourceOfNewsController {
                     eventsList.add(eventMap);
                 }
             }
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+
         return eventsList;
     }
 
