@@ -10,6 +10,8 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,12 +27,17 @@ public class SourceOfNewsController {
         List<Map<String, String>> eventsList = new ArrayList<>();
         try {
             String xmlUrl = "https://www.forexfactory.com/ffcal_week_this.xml";
+            URL url = new URL(xmlUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestProperty("User-Agent", "Mozilla/5.0");
+            InputStream input = conn.getInputStream();
 
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.parse(new URL(xmlUrl).openStream());
+            Document doc = builder.parse(input);
 
             NodeList eventNodes = doc.getElementsByTagName("event");
+            System.out.println("Found " + eventNodes.getLength() + " events."); // debug
 
             for (int i = 0; i < eventNodes.getLength(); i++) {
                 Node eventNode = eventNodes.item(i);
@@ -47,11 +54,9 @@ public class SourceOfNewsController {
                     eventsList.add(eventMap);
                 }
             }
-
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
         return eventsList;
     }
 
@@ -62,4 +67,5 @@ public class SourceOfNewsController {
         }
         return "";
     }
+
 }
