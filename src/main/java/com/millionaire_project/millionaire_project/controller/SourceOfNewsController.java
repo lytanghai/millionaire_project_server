@@ -33,7 +33,8 @@ public class SourceOfNewsController {
 
     @GetMapping("/download-sample")
     public ResponseEntity<InputStreamResource> downloadSample() throws IOException {
-        ClassPathResource file = new ClassPathResource("src/main/resources/static/upcoming.xlsx");
+        // Path is relative to resources folder
+        ClassPathResource file = new ClassPathResource("static/upcoming.xlsx");
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=upcoming.xlsx")
